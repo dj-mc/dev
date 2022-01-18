@@ -1,22 +1,23 @@
 #!/usr/bin/env bash
 
 # TODO:
+# Add common options with flags
 # Squash a particular file or directory
-# Make common options with flags
 
-# Show backups
+# Show backups:
 # git show-ref | awk '/ refs.original.refs/{print$2}'
-# Remove backups
+# Remove backups:
 # git filter-branch -f \
 # --index-filter 'git rm --cached --ignore-unmatch Rakefile' HEAD
-# Alternative solution
+# Alternative solution:
 # git update-ref -d refs/original/refs/heads/master
 
 USER="dj-mc"
 
 declare -a repo_list=(
-    "py"
-    "webdev"
+    # "py"
+    # "webdev"
+    # "node-rw"
 )
 
 function decant() {

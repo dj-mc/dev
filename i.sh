@@ -4,13 +4,8 @@ printf "A post-install script for Ubuntu 20.04 (LTS)\n\n"
 
 # TODO:
 # Do not install gnome-tweaks outside of GNOME's DE
-# Detect desktop env, distribution
 # Test this script against LXQt and GNOME (debian-based)
-# Delete ~/.mozilla/firefox/contents before stow firefox
 # Replace snap installs with .deb (or via apt) if possible
-# Clone .secrets/.dotfiles and install
-# Stow .gitconfig before installing etckeeper
-# Stow .nvmrc before installing and using nvm
 # I could optionally install pyenv with brew
 
 OS="$OSTYPE"
@@ -19,8 +14,8 @@ printf "Detected $OS and $DE\n"
 
 declare -a apt_list=(
     "git"
-    "etckeeper"
     "stow"
+    "etckeeper"
     "borgbackup"
     "pass"
     # --- # --- # --- #
@@ -39,18 +34,20 @@ declare -a apt_list=(
     # --- # --- # --- #
     "gnome-tweaks"
     # --- # --- # --- #
+    "i3"
+    "qemu"
     "vim"
     "xterm"
-    "qemu"
-    "i3"
     # --- # --- # --- #
     "imagemagick"
+    "kdenlive"
     "krita"
     # --- # --- # --- #
-    "ffmpeg"
-    "cmus"
     "ardour"
+    "cmus"
+    "ffmpeg"
     "lmms"
+    "supercollider"
 )
 
 declare -a pipx_list=(
@@ -244,17 +241,9 @@ function manual_install_jabba () {
         curl -sL https://github.com/shyiko/jabba/raw/master/install.sh | bash && . ~/.jabba/jabba.sh
         # Remove next line from ~/.profile, keep in ~/.bashrc instead
         # [ -s "/home/dan/.jabba/jabba.sh" ] && source "/home/dan/.jabba/jabba.sh"
-        jabba install adopt@1.11.0-11
+        jabba install adopt@1.11.0-11 && jabba use adopt@1.11.0-11
     else
         printf "✅ jabba: $(find ~ -type d -name ".jabba")\n"
-    fi
-}
-
-function manual_install_keybase () {
-    if if_no_exe_cmd "keybase"; then
-        curl --remote-name https://prerelease.keybase.io/keybase_amd64.deb
-        sudo apt install ./keybase_amd64.deb
-        run_keybase
     fi
 }
 
@@ -278,5 +267,3 @@ brew_install_list
 
 manual_install_perlbrew
 manual_install_jabba
-
-manual_install_keybase

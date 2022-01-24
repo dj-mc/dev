@@ -8,7 +8,7 @@
 # git show-ref | awk '/ refs.original.refs/{print$2}'
 # Remove backups:
 # git filter-branch -f \
-# --index-filter 'git rm --cached --ignore-unmatch Rakefile' HEAD
+#     --index-filter 'git rm --cached --ignore-unmatch Rakefile' HEAD
 # Alternative solution:
 # git update-ref -d refs/original/refs/heads/master
 

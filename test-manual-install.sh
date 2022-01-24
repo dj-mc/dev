@@ -13,7 +13,7 @@ command -v pyenv
 command -v keybase
 
 source ~/.jabba/jabba.sh
-printf "$(command -v jabba) $(jabba --version)\n"
+printf "%s\n" "$(command -v jabba) $(jabba --version)"
 
 source ~/.nvm/nvm.sh
-printf "$(command -v nvm) $(nvm --version)\n"
+printf "%s\n" "$(command -v nvm) $(nvm --version)"

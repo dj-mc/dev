@@ -4,16 +4,18 @@ printf "A post-install script for Ubuntu 20.04 (LTS)\n\n"
 
 # TODO:
 # Do not install gnome-tweaks outside of GNOME's DE
-# Test this script against LXQt and GNOME (debian-based)
+# Test this script against Lubutnu w/ LXQt
 # Replace snap installs with .deb (or via apt) if possible
 # I could optionally install pyenv with brew
 
 OS="$OSTYPE"
 DE="$XDG_CURRENT_DESKTOP"
-printf "Detected $OS and $DE\n"
+printf "%s\n" "Detected $OS and $DE"
 
 declare -a apt_list=(
     "git"
+    "git-crypt"
+    "git-secret"
     "stow"
     "etckeeper"
     "borgbackup"
@@ -52,6 +54,7 @@ declare -a apt_list=(
 
 declare -a pipx_list=(
     "tox"
+    "beautysh"
     "black"
     "flake8"
     "twine"
@@ -66,15 +69,17 @@ declare -a pipx_list=(
 declare -a npm_list=(
     "yarn"
     "http-server"
+    "pnpm"
 )
 
 declare -a brew_list=(
     "gh"
     "emacs"
     "shellcheck"
+    "blackbox"
 )
 
-function if_kde () {
+function if_lxqt () {
     return
 }
 
@@ -82,16 +87,12 @@ function if_gnome () {
     return
 }
 
-function if_lxqt () {
-    return
-}
-
 function not_found_alert () {
-    printf "\n❌ $1 not found. Attempting to install...\n\n"
+    printf "\n%s\n\n" "❌ $1 not found. Attempting to install..."
 }
 
 function found_alert () {
-    printf "✅ $(whereis "$1")\n"
+    printf "%s\n" "✅ $(whereis "$1")"
 }
 
 function if_no_exe_cmd () {
@@ -111,7 +112,7 @@ function pre_install_options () {
 function post_install_options () {
     case "$1" in
         "clangd-12")
-            printf "Found clangd-12 as $1"
+            printf "%s" "Found clangd-12 as $1"
             sudo update-alternatives --install /usr/bin/clangd clangd /usr/bin/clangd-12 100
             ;;
     esac
@@ -120,8 +121,8 @@ function post_install_options () {
 ### INSTALL ###
 
 function up_date_grade () {
-    sudo apt-get update
-    sudo apt-get dist-upgrade
+    sudo apt-get -y update
+    sudo apt-get -y dist-upgrade
 }
 
 function add_ppa_repo () {
@@ -134,26 +135,35 @@ function add_ppa_repo () {
 function apt_install_list () {
     for a in "${apt_list[@]}"
     do
-        # printf "$(apt-cache policy $a)"
-        if ! [ "$(apt-mark showmanual | grep "^$a$")" ]; then
-        # Alternative to apt-mark showmanual:
-        # grep "apt-get install" /var/log/apt/history.log
-            not_found_alert "$a"
-            pre_install_options "$a"
-            sudo apt-get install "$a"
-            post_install_options "$a"
-        else
-            found_alert "$a"
-        fi
+        case "$a" in
+            "supercollider")
+                if if_no_exe_cmd "supernova"; then
+                    sudo apt-get -y install "$a"
+                fi
+                ;;
+            *)
+                # printf "$(apt-cache policy $a)"
+                if ! [ "$(apt-mark showmanual | grep "^$a$")" == "$a" ]; then
+                    # Alternative to apt-mark showmanual:
+                    # grep "apt-get install" /var/log/apt/history.log
+                    not_found_alert "$a"
+                    pre_install_options "$a"
+                    sudo apt-get -y install "$a"
+                    post_install_options "$a"
+                else
+                    found_alert "$a"
+                fi
+        esac
     done
-    sudo apt autoremove
+    sudo apt-get -y autoremove
 }
 
 function snap_install_list () {
-    sudo snap install code --classic
-    sudo snap install intellij-idea-community --classic
     sudo snap install blender --classic
+    sudo snap install code --classic
     sudo snap install discord
+    sudo snap install gitkraken --classic
+    sudo snap install intellij-idea-community --classic
 }
 
 function pip_install_pipx () {
@@ -182,13 +192,13 @@ function manual_install_nvm () {
     if ! [ -f ~/.nvm/nvm.sh ]; then
         not_found_alert "nvm"
         export NVM_DIR="$HOME/.nvm" && (
-        git clone https://github.com/nvm-sh/nvm.git "$NVM_DIR"
-        cd "$NVM_DIR"
-        git checkout `git describe --abbrev=0 --tags --match "v[0-9]*" $(git rev-list --tags --max-count=1)`
+            git clone https://github.com/nvm-sh/nvm.git "$NVM_DIR"
+            cd "$NVM_DIR"
+            git checkout `git describe --abbrev=0 --tags --match "v[0-9]*" $(git rev-list --tags --max-count=1)`
         ) && \. "$NVM_DIR/nvm.sh"
         return
     fi
-        printf "✅ nvm: $(find ~ -type d -name ".nvm")\n"
+    printf "%s\n" "✅ nvm: $(find ~ -type d -name ".nvm")"
 }
 
 function nvm_install_node () {
@@ -206,44 +216,47 @@ function npm_install_list () {
     done
 }
 
-function npx_install_pnpm () {
-    if if_no_exe_cmd "pnpm"; then
-        npx pnpm add -g pnpm
-    fi
-}
-
 function manual_install_brew () {
     if if_no_exe_cmd "brew"; then
-        /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
+        yes "" | /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
     fi
 }
 
 function brew_install_list () {
     for b in "${brew_list[@]}"
     do
-        if if_no_exe_cmd "$b"; then
-            brew install "$b"
-        fi
+        case "$b" in
+            "blackbox")
+                if if_no_exe_cmd "blackbox_cat"; then
+                    brew install "$b"
+                fi
+                ;;
+            *)
+                if if_no_exe_cmd "$b"; then
+                    brew install "$b"
+                fi
+                ;;
+        esac
     done
 }
 
 function manual_install_perlbrew () {
     if if_no_exe_cmd "perlbrew"; then
         curl -L https://install.perlbrew.pl | bash
-        perlbrew install perl-5.34.0 && perlbrew switch perl-5.34.0
+        # Sub shell:
+        # perlbrew install perl-5.34.0 && perlbrew switch perl-5.34.0
+        # tail -f ~/perl5/perlbrew/build.perl-5.34.0.log
     fi
 }
 
 function manual_install_jabba () {
     if [ ! -f ~/.jabba/jabba.sh ]; then
         not_found_alert "jabba"
-        export JABBA_VERSION=...
-        curl -sL https://github.com/shyiko/jabba/raw/master/install.sh | bash && . ~/.jabba/jabba.sh
-        # Remove next line from ~/.profile, keep in ~/.bashrc instead
-        # [ -s "/home/dan/.jabba/jabba.sh" ] && source "/home/dan/.jabba/jabba.sh"
+        export JABBA_VERSION=0.11.2
+        curl -sL https://github.com/shyiko/jabba/raw/master/install.sh | bash -s -- --skip-rc && . ~/.jabba/jabba.sh
         jabba install adopt@1.11.0-11 && jabba use adopt@1.11.0-11
     else
-        printf "✅ jabba: $(find ~ -type d -name ".jabba")\n"
+        printf "%s\n" "✅ jabba: $(find ~ -type d -name ".jabba")"
     fi
 }
 
@@ -260,7 +273,6 @@ manual_install_pyenv
 manual_install_nvm
 nvm_install_node
 npm_install_list
-npx_install_pnpm
 
 manual_install_brew
 brew_install_list

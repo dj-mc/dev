@@ -14,6 +14,7 @@ printf "%s\n" "Detected $OS and $DE"
 
 declare -a apt_list=(
     "git"
+    "gnupg"
     "git-crypt"
     "git-secret"
     "stow"

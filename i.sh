@@ -42,6 +42,7 @@ declare -a apt_list=(
     "vim"
     "xterm"
     # --- # --- # --- #
+    "gthumb"
     "imagemagick"
     "kdenlive"
     "krita"

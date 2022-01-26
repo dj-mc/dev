@@ -1,13 +1,15 @@
 #!/usr/bin/env bash
 
 ID=$1
+FN="$ID".tar.gz
 
 import_key() {
-    gpg -o "$ID".tar.gz -d "$ID".tar.gz.gpg | tar -xzvf
-    gpg --import "$ID".public.asc
-    gpg --import "$ID".private.asc
-    gpg --import "$ID".subkey.asc
-    gpg --import-ownertrust "$ID".ownertrust.txt
+    gpg -o "$FN" -d "$FN".gpg \
+        && tar -xzvf "$FN"
+    gpg --import "$ID"/"$ID".public.asc
+    gpg --import "$ID"/"$ID".private.asc
+    gpg --import "$ID"/"$ID".subkey.asc
+    gpg --import-ownertrust "$ID"/"$ID".ownertrust.txt
 }
 
 import_key

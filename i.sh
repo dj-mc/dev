@@ -7,78 +7,62 @@ printf "A post-install script for Ubuntu 20.04 (LTS)\n\n"
 # Test this script against Lubutnu w/ LXQt
 # Replace snap installs with .deb (or via apt) if possible
 # I could optionally install pyenv with brew
+# whereis empty?
+#   - libsfml-dev
+#   - python3-pip
+#   - python3.8-venv
+#   - qemu
+#   - imagemagick
+#   - ardour
 
 OS="$OSTYPE"
 DE="$XDG_CURRENT_DESKTOP"
 printf "%s\n" "Detected $OS and $DE"
 
 declare -a apt_list=(
-    "git"
-    "gnupg"
-    "git-crypt"
-    "git-secret"
-    "stow"
-    "etckeeper"
-    "borgbackup"
-    "pass"
+    "git" "stow" "etckeeper"
+    "gnupg" "git-crypt" "git-secret"
+    "borgbackup" "pass"
+    # --- # --- # --- #
+    "curl" "wget"
+    "file" "procps" "tree"
     # --- # --- # --- #
     "build-essential"
-    "curl"
-    "devscripts"
-    "file"
-    "libsfml-dev"
-    "procps"
-    "tree"
-    # --- # --- # --- #
-    "clang"
-    "clangd-12"
-    "python3-pip"
-    "python3.8-venv"
+    "devscripts" "libsfml-dev"
+    "clang" "clangd-12"
+    "python3-pip" "python3.8-venv"
     # --- # --- # --- #
     "gnome-tweaks"
     # --- # --- # --- #
-    "i3"
-    "qemu"
-    "vim"
-    "xterm"
+    "i3" "qemu"
+    "vim" "tmux" "xterm"
     # --- # --- # --- #
-    "gthumb"
-    "imagemagick"
-    "kdenlive"
-    "krita"
+    "gthumb" "kdenlive"
+    "imagemagick" "krita"
     # --- # --- # --- #
-    "ardour"
-    "cmus"
-    "ffmpeg"
-    "lmms"
+    "cmus" "ffmpeg"
+    "ardour" "lmms"
     "supercollider"
 )
 
 declare -a pipx_list=(
-    "tox"
-    "beautysh"
-    "black"
-    "flake8"
-    "twine"
-    "pipenv"
-    "poetry"
+    "tox" "twine"
+    "black" "flake8"
+    "pipenv" "poetry"
     "cookiecutter"
-    "cmake"
-    "ninja"
+    "cmake" "ninja"
     "git-filter-repo"
+    "beautysh"
 )
 
 declare -a npm_list=(
-    "yarn"
-    "http-server"
-    "pnpm"
+    "pnpm" "yarn"
+    "http-server" "nodemon"
 )
 
 declare -a brew_list=(
-    "gh"
-    "emacs"
-    "shellcheck"
-    "blackbox"
+    "gh" "emacs"
+    "shellcheck" "blackbox"
 )
 
 function if_lxqt () {

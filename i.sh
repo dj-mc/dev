@@ -45,6 +45,13 @@ declare -a apt_list=(
     "supercollider"
 )
 
+declare -a snap_list=(
+    "discord" "blender --classic"
+    "code --classic" "gitkraken --classic"
+    "dotnet-sdk --classic --channel=6.0"
+    "intellij-idea-community --classic"
+)
+
 declare -a pipx_list=(
     "tox" "twine"
     "black" "flake8"
@@ -91,6 +98,14 @@ function if_no_exe_cmd () {
     fi
 }
 
+function pre_install_alert () {
+    printf "%s" "Found pre-install options for $1"
+}
+
+function post_install_alert () {
+    printf "%s" "Found post-install options for $1"
+}
+
 function pre_install_options () {
     return
 }
@@ -98,8 +113,12 @@ function pre_install_options () {
 function post_install_options () {
     case "$1" in
         "clangd-12")
-            printf "%s" "Found clangd-12 as $1"
+            post_install_alert "$1"
             sudo update-alternatives --install /usr/bin/clangd clangd /usr/bin/clangd-12 100
+            ;;
+        "dotnet-sdk")
+            post_install_alert "$1"
+            sudo snap alias dotnet-sdk.dotnet dotnet
             ;;
     esac
 }
@@ -145,11 +164,18 @@ function apt_install_list () {
 }
 
 function snap_install_list () {
-    sudo snap install blender --classic
-    sudo snap install code --classic
-    sudo snap install discord
-    sudo snap install gitkraken --classic
-    sudo snap install intellij-idea-community --classic
+    for s in "${snap_list[@]}"
+    do
+        app=$(awk '{print $1}' <<< "$s")
+        if [ "$app" == "dotnet-sdk" ]; then
+            app="dotnet"
+        fi
+        if if_no_exe_cmd "$app"; then
+            pre_install_options "$app"
+            eval sudo snap install "$s"
+            post_install_options "$app"
+        fi
+    done
 }
 
 function pip_install_pipx () {
@@ -180,7 +206,9 @@ function manual_install_nvm () {
         export NVM_DIR="$HOME/.nvm" && (
             git clone https://github.com/nvm-sh/nvm.git "$NVM_DIR"
             cd "$NVM_DIR"
-            git checkout `git describe --abbrev=0 --tags --match "v[0-9]*" $(git rev-list --tags --max-count=1)`
+            git checkout \
+                `git describe --abbrev=0 --tags --match "v[0-9]*" \
+                $(git rev-list --tags --max-count=1)`
         ) && \. "$NVM_DIR/nvm.sh"
         return
     fi
@@ -204,7 +232,8 @@ function npm_install_list () {
 
 function manual_install_brew () {
     if if_no_exe_cmd "brew"; then
-        yes "" | /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
+        yes "" | /bin/bash -c \
+            "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
     fi
 }
 
@@ -239,7 +268,8 @@ function manual_install_jabba () {
     if [ ! -f ~/.jabba/jabba.sh ]; then
         not_found_alert "jabba"
         export JABBA_VERSION=0.11.2
-        curl -sL https://github.com/shyiko/jabba/raw/master/install.sh | bash -s -- --skip-rc && . ~/.jabba/jabba.sh
+        curl -sL https://github.com/shyiko/jabba/raw/master/install.sh \
+            | bash -s -- --skip-rc && . ~/.jabba/jabba.sh
         jabba install adopt@1.11.0-11 && jabba use adopt@1.11.0-11
     else
         printf "%s\n" "✅ jabba: $(find ~ -type d -name ".jabba")"

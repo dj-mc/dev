@@ -18,3 +18,6 @@ command -v nvm
 
 npm -g upgrade; npm audit fix
 pnpm add -g pnpm
+
+# jabba
+# perlbrew

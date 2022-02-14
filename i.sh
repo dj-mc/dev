@@ -118,7 +118,7 @@ function post_install_options () {
             ;;
         "dotnet-sdk")
             post_install_alert "$1"
-            sudo snap alias dotnet-sdk.dotnet dotnet
+            sudo ln -s /snap/dotnet-sdk/current/dotnet /usr/local/bin/dotnet
             ;;
     esac
 }

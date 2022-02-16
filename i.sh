@@ -41,7 +41,7 @@ declare -a apt_list=(
     "imagemagick" "krita"
     # --- # --- # --- #
     "cmus" "ffmpeg"
-    "ardour" "lmms"
+    "mpd" "ardour" "lmms"
     "supercollider"
 )
 
@@ -116,7 +116,7 @@ function post_install_options () {
             post_install_alert "$1"
             sudo update-alternatives --install /usr/bin/clangd clangd /usr/bin/clangd-12 100
             ;;
-        "dotnet-sdk")
+        "dotnet")
             post_install_alert "$1"
             sudo ln -s /snap/dotnet-sdk/current/dotnet /usr/local/bin/dotnet
             ;;

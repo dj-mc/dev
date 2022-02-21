@@ -8,12 +8,16 @@ printf "A post-install script for Ubuntu 20.04 (LTS)\n\n"
 # Replace snap installs with .deb (or via apt) if possible
 # I could optionally install pyenv with brew
 # whereis empty?
-#   - libsfml-dev
-#   - python3-pip
-#   - python3.8-venv
-#   - qemu
-#   - imagemagick
-#   - ardour
+# libsfml-dev:
+# libffi-dev:
+# python3-pip:
+# python3.8-venv:
+# python-tk:
+# python3-tk:
+# tk-dev:
+# qemu:
+# imagemagick:
+# ardour:
 
 OS="$OSTYPE"
 DE="$XDG_CURRENT_DESKTOP"
@@ -25,12 +29,15 @@ declare -a apt_list=(
     "borgbackup" "pass"
     # --- # --- # --- #
     "curl" "wget"
-    "file" "procps" "tree"
+    "file" "procps"
+    "smem" "tree"
     # --- # --- # --- #
     "build-essential"
-    "devscripts" "libsfml-dev"
+    "libsfml-dev" "libffi-dev"
     "clang" "clangd-12"
     "python3-pip" "python3.8-venv"
+    "python-tk" "python3-tk" "tk-dev"
+    "devscripts"
     # --- # --- # --- #
     "gnome-tweaks"
     # --- # --- # --- #
@@ -276,6 +283,12 @@ function manual_install_jabba () {
     fi
 }
 
+function manual_install_g () {
+    if if_no_exe_cmd "g"; then
+        yes | curl -sSL https://git.io/g-install | sh -s
+    fi
+}
+
 up_date_grade
 add_ppa_repo
 apt_install_list
@@ -295,3 +308,4 @@ brew_install_list
 
 manual_install_perlbrew
 manual_install_jabba
+manual_install_g

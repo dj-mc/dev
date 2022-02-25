@@ -72,6 +72,7 @@ declare -a pipx_list=(
 declare -a npm_list=(
     "pnpm" "yarn"
     "http-server" "nodemon"
+    "npm-check-updates"
 )
 
 declare -a brew_list=(

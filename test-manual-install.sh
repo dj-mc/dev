@@ -10,8 +10,6 @@ command -v pipenv
 
 command -v pyenv
 
-command -v keybase
-
 source ~/.jabba/jabba.sh
 printf "%s\n" "$(command -v jabba) $(jabba --version)"
 

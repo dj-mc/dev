@@ -3,6 +3,8 @@
 # TODO:
 # Add common options with flags
 # Squash a particular file or directory
+# - if commit only changes target file, and nothing more
+# - then squash the commit to its nearest identical neighbor
 
 # Show backups:
 # git show-ref | awk '/ refs.original.refs/{print$2}'
@@ -44,7 +46,8 @@ function decant() {
         # Remove untracked (deleted) files from commmit history
         git filter-repo --paths-from-file /tmp/"${REPO}"-ls.txt
         # Remove empty commits from commit history
-        git filter-repo --prune-empty always
+        # I don't want to remove the initial commit if it's empty
+        # git filter-repo --prune-empty always
         cd ..
 
         # I have to clone twice because I need `git ls-files` first, and at the

@@ -53,7 +53,7 @@ declare -a apt_list=(
 )
 
 declare -a snap_list=(
-    "discord" "blender --classic"
+    "blender --classic"
     "code --classic" "gitkraken --classic"
     "dotnet-sdk --classic --channel=6.0"
     "intellij-idea-community --classic"
@@ -283,9 +283,12 @@ function manual_install_jabba () {
     fi
 }
 
+# yes |
+# yes | ""
 function manual_install_g () {
     if if_no_exe_cmd "g"; then
-        yes | curl -sSL https://git.io/g-install | sh -s
+        # Prevent this script modifying ~/.bashrc
+        curl -sSL https://git.io/g-install | sh -s
     fi
 }
 

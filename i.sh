@@ -78,6 +78,7 @@ declare -a npm_list=(
 declare -a brew_list=(
     "gh" "emacs"
     "shellcheck" "blackbox"
+    "rbenv" "ruby-build"
 )
 
 function if_lxqt () {

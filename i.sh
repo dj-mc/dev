@@ -8,16 +8,6 @@ printf "A post-install script for Ubuntu 20.04 (LTS)\n\n"
 # Replace snap installs with .deb (or via apt) if possible
 # I could optionally install pyenv with brew
 # whereis empty?
-# libsfml-dev:
-# libffi-dev:
-# python3-pip:
-# python3.8-venv:
-# python-tk:
-# python3-tk:
-# tk-dev:
-# qemu:
-# imagemagick:
-# ardour:
 
 OS="$OSTYPE"
 DE="$XDG_CURRENT_DESKTOP"
@@ -32,9 +22,12 @@ declare -a apt_list=(
     "file" "procps"
     "smem" "tree"
     # --- # --- # --- #
-    "build-essential"
-    "libsfml-dev" "libffi-dev"
-    "clang" "clangd-12"
+    "libbz2-dev" "libffi-dev" "liblzma-dev"
+    "libncursesw5-dev" "libreadline-dev" "libsfml-dev"
+    "libsqlite3-dev" "libssl-dev" "libxml2-dev"
+    "libxmlsec1-dev" "xz-utils" "zlib1g-dev"
+    # --- # --- # --- #
+    "build-essential" "clang" "clangd-12" "llvm"
     "python3-pip" "python3.8-venv"
     "python-tk" "python3-tk" "tk-dev"
     "devscripts"
@@ -72,7 +65,7 @@ declare -a pipx_list=(
 declare -a npm_list=(
     "pnpm" "yarn"
     "http-server" "nodemon"
-    "npm-check-updates"
+    "npm-check-updates" "cspell"
 )
 
 declare -a brew_list=(

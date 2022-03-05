@@ -6,7 +6,6 @@ printf "A post-install script for Ubuntu 20.04 (LTS)\n\n"
 # Do not install gnome-tweaks outside of GNOME's DE
 # Test this script against Lubutnu w/ LXQt
 # Replace snap installs with .deb (or via apt) if possible
-# I could optionally install pyenv with brew
 # whereis empty?
 
 OS="$OSTYPE"
@@ -149,9 +148,10 @@ function apt_install_list () {
                 fi
                 ;;
             *)
-                # printf "$(apt-cache policy $a)"
+                # TOO SLOW
                 if ! [ "$(apt-mark showmanual | grep "^$a$")" == "$a" ]; then
                     # Alternative to apt-mark showmanual:
+                    # printf "$(apt-cache policy $a)"
                     # grep "apt-get install" /var/log/apt/history.log
                     not_found_alert "$a"
                     pre_install_options "$a"
@@ -194,12 +194,6 @@ function pipx_install_list () {
             pipx install "$p"
         fi
     done
-}
-
-function manual_install_pyenv () {
-    if if_no_exe_cmd "pyenv"; then
-        curl https://pyenv.run | bash
-    fi
 }
 
 function manual_install_nvm () {
@@ -266,6 +260,12 @@ function manual_install_perlbrew () {
     fi
 }
 
+function manual_install_nix () {
+    if if_no_exe_cmd "nix"; then
+        sh <(curl -L https://nixos.org/nix/install) --no-daemon
+    fi
+}
+
 function manual_install_jabba () {
     if [ ! -f ~/.jabba/jabba.sh ]; then
         not_found_alert "jabba"
@@ -295,8 +295,6 @@ snap_install_list
 pip_install_pipx
 pipx_install_list
 
-manual_install_pyenv
-
 manual_install_nvm
 nvm_install_node
 npm_install_list
@@ -305,5 +303,6 @@ manual_install_brew
 brew_install_list
 
 manual_install_perlbrew
+manual_install_nix
 manual_install_jabba
 manual_install_g

@@ -3,6 +3,9 @@
 printf "A post-install script for Ubuntu 20.04 (LTS)\n\n"
 
 # TODO:
+# gem_install_list
+# rbenv install 3.1.1
+# rbenv global 3.1.1
 # Do not install gnome-tweaks outside of GNOME's DE
 # Test this script against Lubutnu w/ LXQt
 # Replace snap installs with .deb (or via apt) if possible
@@ -71,6 +74,10 @@ declare -a brew_list=(
     "gh" "emacs"
     "shellcheck" "blackbox"
     "rbenv" "ruby-build"
+)
+
+declare -a gem_list=(
+    "bundler" "solargraph" "rails"
 )
 
 function if_lxqt () {

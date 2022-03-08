@@ -2,6 +2,7 @@
 
 sudo apt update; sudo apt upgrade -y
 brew update; brew upgrade
+gem update
 
 python3 -m pip install --upgrade pip
 pip3 install --upgrade pipx

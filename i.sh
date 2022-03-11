@@ -31,7 +31,6 @@ declare -a apt_list=(
     # --- # --- # --- #
     "build-essential" "clang" "clangd-12" "llvm"
     "python3-pip" "python3.8-venv"
-    "python-tk" "python3-tk" "tk-dev"
     "devscripts"
     # --- # --- # --- #
     "gnome-tweaks"
@@ -74,10 +73,12 @@ declare -a brew_list=(
     "gh" "emacs"
     "shellcheck" "blackbox"
     "rbenv" "ruby-build"
+    "php@8.1"
 )
 
 declare -a gem_list=(
-    "bundler" "solargraph" "rails"
+    "bundler" "solargraph"
+    "rails" "rubocop" "pry"
 )
 
 function if_lxqt () {

@@ -147,26 +147,26 @@ function add_ppa_repo () {
 }
 
 function apt_install_list () {
-    for a in "${apt_list[@]}"
+    for apt_pkg in "${apt_list[@]}"
     do
-        case "$a" in
+        case "$apt_pkg" in
             "supercollider")
                 if if_no_exe_cmd "supernova"; then
-                    sudo apt-get -y install "$a"
+                    sudo apt-get -y install "$apt_pkg"
                 fi
                 ;;
             *)
                 # TOO SLOW
-                if ! [ "$(apt-mark showmanual | grep "^$a$")" == "$a" ]; then
+                if ! [ "$(apt-mark showmanual | grep "^$apt_pkg$")" == "$apt_pkg" ]; then
                     # Alternative to apt-mark showmanual:
-                    # printf "$(apt-cache policy $a)"
+                    # printf "$(apt-cache policy $apt_pkg)"
                     # grep "apt-get install" /var/log/apt/history.log
-                    not_found_alert "$a"
-                    pre_install_options "$a"
-                    sudo apt-get -y install "$a"
-                    post_install_options "$a"
+                    not_found_alert "$apt_pkg"
+                    pre_install_options "$apt_pkg"
+                    sudo apt-get -y install "$apt_pkg"
+                    post_install_options "$apt_pkg"
                 else
-                    found_alert "$a"
+                    found_alert "$apt_pkg"
                 fi
         esac
     done
@@ -174,16 +174,16 @@ function apt_install_list () {
 }
 
 function snap_install_list () {
-    for s in "${snap_list[@]}"
+    for snap_pkg in "${snap_list[@]}"
     do
-        app=$(awk '{print $1}' <<< "$s")
-        if [ "$app" == "dotnet-sdk" ]; then
-            app="dotnet"
+        app_name=$(awk '{print $1}' <<< "$snap_pkg")
+        if [ "$app_name" == "dotnet-sdk" ]; then
+            app_name="dotnet"
         fi
-        if if_no_exe_cmd "$app"; then
-            pre_install_options "$app"
-            eval sudo snap install "$s"
-            post_install_options "$app"
+        if if_no_exe_cmd "$app_name"; then
+            pre_install_options "$app_name"
+            eval sudo snap install "$snap_pkg"
+            post_install_options "$app_name"
         fi
     done
 }
@@ -196,10 +196,10 @@ function pip_install_pipx () {
 }
 
 function pipx_install_list () {
-    for p in "${pipx_list[@]}"
+    for pip_pkg in "${pipx_list[@]}"
     do
-        if if_no_exe_cmd "$p"; then
-            pipx install "$p"
+        if if_no_exe_cmd "$pip_pkg"; then
+            pipx install "$pip_pkg"
         fi
     done
 }
@@ -226,10 +226,10 @@ function nvm_install_node () {
 }
 
 function npm_install_list () {
-    for n in "${npm_list[@]}"
+    for node_pkg in "${npm_list[@]}"
     do
-        if if_no_exe_cmd "$n"; then
-            npm i -g "$n"
+        if if_no_exe_cmd "$node_pkg"; then
+            npm i -g "$node_pkg"
         fi
     done
 }
@@ -242,17 +242,17 @@ function manual_install_brew () {
 }
 
 function brew_install_list () {
-    for b in "${brew_list[@]}"
+    for bottle in "${brew_list[@]}"
     do
-        case "$b" in
+        case "$bottle" in
             "blackbox")
                 if if_no_exe_cmd "blackbox_cat"; then
-                    brew install "$b"
+                    brew install "$bottle"
                 fi
                 ;;
             *)
-                if if_no_exe_cmd "$b"; then
-                    brew install "$b"
+                if if_no_exe_cmd "$bottle"; then
+                    brew install "$bottle"
                 fi
                 ;;
         esac

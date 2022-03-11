@@ -259,6 +259,15 @@ function brew_install_list () {
     done
 }
 
+function gem_install_list () {
+    for gem_package in "${gem_list[@]}"
+    do
+        if if_no_exe_cmd "$gem_package"; then
+            gem install "$gem_package"
+        fi
+    done
+}
+
 function manual_install_perlbrew () {
     if if_no_exe_cmd "perlbrew"; then
         curl -L https://install.perlbrew.pl | bash
@@ -310,6 +319,7 @@ npm_install_list
 manual_install_brew
 brew_install_list
 
+gem_install_list
 manual_install_perlbrew
 manual_install_nix
 manual_install_jabba

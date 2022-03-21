@@ -3,9 +3,7 @@
 printf "A post-install script for Ubuntu 20.04 (LTS)\n\n"
 
 # TODO:
-# gem_install_list
-# rbenv install 3.1.1
-# rbenv global 3.1.1
+# Make install script for nix
 # Do not install gnome-tweaks outside of GNOME's DE
 # Test this script against Lubutnu w/ LXQt
 # Replace snap installs with .deb (or via apt) if possible
@@ -56,7 +54,10 @@ declare -a snap_list=(
 declare -a pipx_list=(
     "tox" "twine"
     "black" "flake8"
-    "pipenv" "poetry"
+    # pdm:
+    # pdm completion bash \
+    # > /etc/bash_completion.d/pdm.bash-completion
+    "pdm" "pipenv"
     "cookiecutter"
     "cmake" "ninja"
     "git-filter-repo"
@@ -73,6 +74,7 @@ declare -a brew_list=(
     "gh" "emacs"
     "shellcheck" "blackbox"
     "rbenv" "ruby-build"
+    # Not found in brew_install_list:
     "php@8.1"
 )
 
@@ -202,6 +204,13 @@ function pipx_install_list () {
             pipx install "$pip_pkg"
         fi
     done
+}
+
+function manual_install_poetry () {
+    # curl -sSL https://raw.githubusercontent.com/python-poetry/poetry/master/get-poetry.py \
+    # --no-modify-path | python3 -
+    # poetry completions bash > /etc/bash_completion.d/poetry.bash-completion
+    return
 }
 
 function manual_install_nvm () {

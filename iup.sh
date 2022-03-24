@@ -9,6 +9,10 @@ python3 -m pip install --upgrade pip
 pip3 install --upgrade pipx
 pipx upgrade-all
 
+g self-upgrade
+g install latest
+perlbrew self-upgrade
+
 (
     cd "$NVM_DIR"
     git fetch --tags origin
@@ -20,6 +24,3 @@ nix-channel --update; nix-env -iA nixpkgs.nix nixpkgs.cacert
 
 npm -g upgrade; npm audit fix
 pnpm add -g pnpm
-
-# jabba
-# perlbrew

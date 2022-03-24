@@ -3,7 +3,7 @@
 ID=$1
 
 export_key() {
-    mkdir ./"$ID" || {
+    mkdir -p ./"$ID" || {
         printf "%s" "Cannot mkdir ./$($ID)" >&2
         exit 2
     }

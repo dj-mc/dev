@@ -17,9 +17,7 @@
 USER="dj-mc"
 
 declare -a repo_list=(
-    # "py"
-    # "webdev"
-    # "node-rw"
+    "git-repo-name"
 )
 
 function decant() {

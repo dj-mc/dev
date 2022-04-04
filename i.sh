@@ -254,6 +254,11 @@ function brew_install_list () {
     for bottle in "${brew_list[@]}"
     do
         case "$bottle" in
+            "php@8.1")
+                if if_no_exe_cmd "php"; then
+                    brew install "$bottle"
+                fi
+                ;;
             "blackbox")
                 if if_no_exe_cmd "blackbox_cat"; then
                     brew install "$bottle"

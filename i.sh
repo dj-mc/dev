@@ -1,5 +1,7 @@
 #!/usr/bin/env bash
 
+. ./utilities.sh
+
 printf "A post-install script for Ubuntu 20.04 (LTS)\n\n"
 
 # TODO:
@@ -47,7 +49,6 @@ declare -a apt_list=(
 declare -a snap_list=(
     "blender --classic"
     "code --classic" "gitkraken --classic"
-    "dotnet-sdk --classic --channel=6.0"
     "intellij-idea-community --classic"
 )
 
@@ -57,7 +58,7 @@ declare -a pipx_list=(
     # pdm:
     # pdm completion bash \
     # > /etc/bash_completion.d/pdm.bash-completion
-    "pdm" "pipenv"
+    "pdm" "poetry"
     "cookiecutter"
     "cmake" "ninja"
     "git-filter-repo"
@@ -74,7 +75,6 @@ declare -a brew_list=(
     "gh" "emacs"
     "shellcheck" "blackbox"
     "rbenv" "ruby-build"
-    # Not found in brew_install_list:
     "php@8.1"
 )
 
@@ -89,24 +89,6 @@ function if_lxqt () {
 
 function if_gnome () {
     return
-}
-
-function not_found_alert () {
-    printf "\n%s\n\n" "❌ $1 not found. Attempting to install..."
-}
-
-function found_alert () {
-    printf "%s\n" "✅ $(whereis "$1")"
-}
-
-function if_no_exe_cmd () {
-    if ! [ -x "$(command -v "$1")" ]; then
-        not_found_alert "$1"
-        return
-    else
-        found_alert "$1"
-        false
-    fi
 }
 
 function pre_install_alert () {
@@ -127,14 +109,8 @@ function post_install_options () {
             post_install_alert "$1"
             sudo update-alternatives --install /usr/bin/clangd clangd /usr/bin/clangd-12 100
             ;;
-        "dotnet")
-            post_install_alert "$1"
-            sudo ln -s /snap/dotnet-sdk/current/dotnet /usr/local/bin/dotnet
-            ;;
     esac
 }
-
-### INSTALL ###
 
 function up_date_grade () {
     sudo apt-get -y update
@@ -206,28 +182,6 @@ function pipx_install_list () {
     done
 }
 
-function manual_install_poetry () {
-    # curl -sSL https://raw.githubusercontent.com/python-poetry/poetry/master/get-poetry.py \
-    # --no-modify-path | python3 -
-    # poetry completions bash > /etc/bash_completion.d/poetry.bash-completion
-    return
-}
-
-function manual_install_nvm () {
-    if ! [ -f ~/.nvm/nvm.sh ]; then
-        not_found_alert "nvm"
-        export NVM_DIR="$HOME/.nvm" && (
-            git clone https://github.com/nvm-sh/nvm.git "$NVM_DIR"
-            cd "$NVM_DIR"
-            git checkout \
-                `git describe --abbrev=0 --tags --match "v[0-9]*" \
-                $(git rev-list --tags --max-count=1)`
-        ) && \. "$NVM_DIR/nvm.sh"
-        return
-    fi
-    printf "%s\n" "✅ nvm: $(find ~ -type d -name ".nvm")"
-}
-
 function nvm_install_node () {
     if if_no_exe_cmd "node"; then
         nvm install
@@ -241,13 +195,6 @@ function npm_install_list () {
             npm i -g "$node_pkg"
         fi
     done
-}
-
-function manual_install_brew () {
-    if if_no_exe_cmd "brew"; then
-        yes "" | /bin/bash -c \
-            "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
-    fi
 }
 
 function brew_install_list () {
@@ -282,42 +229,6 @@ function gem_install_list () {
     done
 }
 
-function manual_install_perlbrew () {
-    if if_no_exe_cmd "perlbrew"; then
-        curl -L https://install.perlbrew.pl | bash
-        # Sub shell:
-        # perlbrew install perl-5.34.0 && perlbrew switch perl-5.34.0
-        # tail -f ~/perl5/perlbrew/build.perl-5.34.0.log
-    fi
-}
-
-function manual_install_nix () {
-    if if_no_exe_cmd "nix"; then
-        sh <(curl -L https://nixos.org/nix/install) --no-daemon
-    fi
-}
-
-function manual_install_jabba () {
-    if [ ! -f ~/.jabba/jabba.sh ]; then
-        not_found_alert "jabba"
-        export JABBA_VERSION=0.11.2
-        curl -sL https://github.com/shyiko/jabba/raw/master/install.sh \
-            | bash -s -- --skip-rc && . ~/.jabba/jabba.sh
-        jabba install adopt@1.11.0-11 && jabba use adopt@1.11.0-11
-    else
-        printf "%s\n" "✅ jabba: $(find ~ -type d -name ".jabba")"
-    fi
-}
-
-# yes |
-# yes | ""
-function manual_install_g () {
-    if if_no_exe_cmd "g"; then
-        # Prevent this script modifying ~/.bashrc
-        curl -sSL https://git.io/g-install | sh -s
-    fi
-}
-
 up_date_grade
 add_ppa_repo
 apt_install_list
@@ -326,15 +237,9 @@ snap_install_list
 pip_install_pipx
 pipx_install_list
 
-manual_install_nvm
 nvm_install_node
 npm_install_list
 
-manual_install_brew
 brew_install_list
 
 gem_install_list
-manual_install_perlbrew
-manual_install_nix
-manual_install_jabba
-manual_install_g

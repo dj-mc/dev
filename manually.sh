@@ -3,10 +3,12 @@
 . ./utilities.sh
 
 function manual_install_alda () {
-    mkdir -p ~/.alda/bin
-    wget -P ~/.alda/bin https://alda-releases.nyc3.digitaloceanspaces.com/2.2.0/client/linux-amd64/alda
-    wget -P ~/.alda/bin https://alda-releases.nyc3.digitaloceanspaces.com/2.2.0/player/non-windows/alda-player
-    chmod +x ~/.alda/bin/{alda,alda-player}
+    if if_no_exe_cmd "alda"; then
+        mkdir -p ~/.alda/bin
+        wget -P ~/.alda/bin https://alda-releases.nyc3.digitaloceanspaces.com/2.2.0/client/linux-amd64/alda
+        wget -P ~/.alda/bin https://alda-releases.nyc3.digitaloceanspaces.com/2.2.0/player/non-windows/alda-player
+        chmod +x ~/.alda/bin/{alda,alda-player}
+    fi
 }
 
 function manual_install_nvm () {

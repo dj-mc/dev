@@ -36,7 +36,8 @@ declare -a apt_list=(
     "gnome-tweaks"
     # --- # --- # --- #
     "i3" "qemu"
-    "vim" "tmux" "xterm"
+    "tmux" "vim" "xterm"
+    "zsh"
     # --- # --- # --- #
     "gthumb" "kdenlive"
     "imagemagick" "krita"
@@ -46,20 +47,13 @@ declare -a apt_list=(
     "supercollider"
 )
 
-declare -a snap_list=(
-    "blender --classic"
-    "code --classic" "gitkraken --classic"
-    "intellij-idea-community --classic"
-)
-
 declare -a pipx_list=(
     "tox" "twine"
     "black" "flake8"
     # pdm:
     # pdm completion bash \
     # > /etc/bash_completion.d/pdm.bash-completion
-    "pdm" "poetry"
-    "cookiecutter"
+    "pdm" "cookiecutter"
     "cmake" "ninja"
     "git-filter-repo"
     "beautysh"
@@ -67,7 +61,7 @@ declare -a pipx_list=(
 
 declare -a npm_list=(
     "pnpm" "yarn"
-    "http-server" "nodemon"
+    "http-server" "json-server" "nodemon"
     "npm-check-updates" "cspell"
 )
 
@@ -151,21 +145,6 @@ function apt_install_list () {
     sudo apt-get -y autoremove
 }
 
-function snap_install_list () {
-    for snap_pkg in "${snap_list[@]}"
-    do
-        app_name=$(awk '{print $1}' <<< "$snap_pkg")
-        if [ "$app_name" == "dotnet-sdk" ]; then
-            app_name="dotnet"
-        fi
-        if if_no_exe_cmd "$app_name"; then
-            pre_install_options "$app_name"
-            eval sudo snap install "$snap_pkg"
-            post_install_options "$app_name"
-        fi
-    done
-}
-
 function pip_install_pipx () {
     if if_no_exe_cmd "pipx"; then
         python3 -m pip install --user pipx
@@ -232,7 +211,6 @@ function gem_install_list () {
 up_date_grade
 add_ppa_repo
 apt_install_list
-snap_install_list
 
 pip_install_pipx
 pipx_install_list

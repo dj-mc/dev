@@ -4,13 +4,6 @@
 
 printf "A post-install script for Ubuntu 20.04 (LTS)\n\n"
 
-# TODO:
-# Make install script for nix
-# Do not install gnome-tweaks outside of GNOME's DE
-# Test this script against Lubutnu w/ LXQt
-# Replace snap installs with .deb (or via apt) if possible
-# whereis empty?
-
 OS="$OSTYPE"
 DE="$XDG_CURRENT_DESKTOP"
 printf "%s\n" "Detected $OS and $DE"
@@ -76,14 +69,6 @@ declare -a gem_list=(
     "bundler" "solargraph"
     "rails" "rubocop" "pry"
 )
-
-function if_lxqt () {
-    return
-}
-
-function if_gnome () {
-    return
-}
 
 function pre_install_alert () {
     printf "%s" "Found pre-install options for $1"

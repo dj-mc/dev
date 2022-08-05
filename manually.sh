@@ -26,6 +26,14 @@ function manual_install_nvm () {
     printf "%s\n" "✅ nvm: $(find ~ -type d -name ".nvm")"
 }
 
+function manual_install_poetry () {
+    if if_no_exe_cmd "poetry"; then
+        curl -sSL \
+        https://raw.githubusercontent.com/python-poetry/poetry/master/get-poetry.py \
+        | python -
+    fi
+}
+
 function manual_install_brew () {
     if if_no_exe_cmd "brew"; then
         yes "" | /bin/bash -c \
@@ -71,6 +79,7 @@ function manual_install_g () {
 
 manual_install_alda
 manual_install_nvm
+manual_install_poetry
 manual_install_brew
 manual_install_perlbrew
 manual_install_nix

@@ -1,44 +1,13 @@
 #!/usr/bin/env bash
 
+. ./apt-get.sh
 . ./utilities.sh
 
-printf "A post-install script for Ubuntu 20.04 (LTS)\n\n"
+printf "A post-install script for Ubuntu jammy (LTS)\n\n"
 
 OS="$OSTYPE"
 DE="$XDG_CURRENT_DESKTOP"
 printf "%s\n" "Detected $OS and $DE"
-
-declare -a apt_list=(
-    "git" "stow" "etckeeper"
-    "gnupg" "git-crypt" "git-secret"
-    "borgbackup" "pass"
-    # --- # --- # --- #
-    "curl" "wget"
-    "file" "procps"
-    "smem" "tree"
-    # --- # --- # --- #
-    "libbz2-dev" "libffi-dev" "liblzma-dev"
-    "libncursesw5-dev" "libreadline-dev" "libsfml-dev"
-    "libsqlite3-dev" "libssl-dev" "libxml2-dev"
-    "libxmlsec1-dev" "xz-utils" "zlib1g-dev"
-    # --- # --- # --- #
-    "build-essential" "clang" "clangd-12" "llvm"
-    "python3-pip" "python3.8-venv"
-    "devscripts"
-    # --- # --- # --- #
-    "gnome-tweaks"
-    # --- # --- # --- #
-    "i3" "qemu"
-    "tmux" "vim" "xterm"
-    "zsh"
-    # --- # --- # --- #
-    "gthumb" "kdenlive"
-    "imagemagick" "krita"
-    # --- # --- # --- #
-    "cmus" "ffmpeg"
-    "mpd" "ardour" "lmms"
-    "supercollider"
-)
 
 declare -a pipx_list=(
     "tox" "twine"
@@ -46,7 +15,8 @@ declare -a pipx_list=(
     # pdm:
     # pdm completion bash \
     # > /etc/bash_completion.d/pdm.bash-completion
-    "pdm" "cookiecutter"
+    "cookiecutter"
+    "pdm" "poetry"
     "cmake" "ninja"
     "git-filter-repo"
     "beautysh"
@@ -58,83 +28,18 @@ declare -a npm_list=(
     "npm-check-updates" "cspell"
 )
 
-declare -a brew_list=(
-    "gh" "emacs"
-    "shellcheck" "blackbox"
-    "rbenv" "ruby-build"
-    "php@8.1"
-)
-
 declare -a gem_list=(
     "bundler" "solargraph"
     "rails" "rubocop" "pry"
 )
-
-function pre_install_alert () {
-    printf "%s" "Found pre-install options for $1"
-}
-
-function post_install_alert () {
-    printf "%s" "Found post-install options for $1"
-}
-
-function pre_install_options () {
-    return
-}
-
-function post_install_options () {
-    case "$1" in
-        "clangd-12")
-            post_install_alert "$1"
-            sudo update-alternatives --install /usr/bin/clangd clangd /usr/bin/clangd-12 100
-            ;;
-    esac
-}
-
-function up_date_grade () {
-    sudo apt-get -y update
-    sudo apt-get -y dist-upgrade
-}
-
-function add_ppa_repo () {
-    # Add ppa repo here
-    # Then update apt_list
-    # sudo apt-get update
-    return
-}
-
-function apt_install_list () {
-    for apt_pkg in "${apt_list[@]}"
-    do
-        case "$apt_pkg" in
-            "supercollider")
-                if if_no_exe_cmd "supernova"; then
-                    sudo apt-get -y install "$apt_pkg"
-                fi
-                ;;
-            *)
-                # TOO SLOW
-                if ! [ "$(apt-mark showmanual | grep "^$apt_pkg$")" == "$apt_pkg" ]; then
-                    # Alternative to apt-mark showmanual:
-                    # printf "$(apt-cache policy $apt_pkg)"
-                    # grep "apt-get install" /var/log/apt/history.log
-                    not_found_alert "$apt_pkg"
-                    pre_install_options "$apt_pkg"
-                    sudo apt-get -y install "$apt_pkg"
-                    post_install_options "$apt_pkg"
-                else
-                    found_alert "$apt_pkg"
-                fi
-        esac
-    done
-    sudo apt-get -y autoremove
-}
 
 function pip_install_pipx () {
     if if_no_exe_cmd "pipx"; then
         python3 -m pip install --user pipx
         python3 -m pipx ensurepath
     fi
+    # Added /home/dan/.local/bin to the PATH
+    # Run 'pipx completions' for completions
 }
 
 function pipx_install_list () {
@@ -146,12 +51,6 @@ function pipx_install_list () {
     done
 }
 
-function nvm_install_node () {
-    if if_no_exe_cmd "node"; then
-        nvm install
-    fi
-}
-
 function npm_install_list () {
     for node_pkg in "${npm_list[@]}"
     do
@@ -161,48 +60,22 @@ function npm_install_list () {
     done
 }
 
-function brew_install_list () {
-    for bottle in "${brew_list[@]}"
-    do
-        case "$bottle" in
-            "php@8.1")
-                if if_no_exe_cmd "php"; then
-                    brew install "$bottle"
-                fi
-                ;;
-            "blackbox")
-                if if_no_exe_cmd "blackbox_cat"; then
-                    brew install "$bottle"
-                fi
-                ;;
-            *)
-                if if_no_exe_cmd "$bottle"; then
-                    brew install "$bottle"
-                fi
-                ;;
-        esac
-    done
-}
-
 function gem_install_list () {
-    for gem_package in "${gem_list[@]}"
+    for gem_pkg in "${gem_list[@]}"
     do
-        if if_no_exe_cmd "$gem_package"; then
-            gem install "$gem_package"
+        if if_no_exe_cmd "$gem_pkg"; then
+            gem install "$gem_pkg"
         fi
     done
 }
 
 up_date_grade
-add_ppa_repo
+# add_ppa_repo
 apt_install_list
 
 pip_install_pipx
 pipx_install_list
 
-nvm_install_node
 npm_install_list
-
-brew_install_list
 
 gem_install_list

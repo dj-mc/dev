@@ -2,86 +2,68 @@
 
 . ./utilities.sh
 
-function manual_install_alda () {
-    if if_no_exe_cmd "alda"; then
-        mkdir -p ~/.alda/bin
-        wget -P ~/.alda/bin https://alda-releases.nyc3.digitaloceanspaces.com/2.2.0/client/linux-amd64/alda
-        wget -P ~/.alda/bin https://alda-releases.nyc3.digitaloceanspaces.com/2.2.0/player/non-windows/alda-player
-        chmod +x ~/.alda/bin/{alda,alda-player}
+function manual_install_nix () {
+    if if_no_exe_cmd "nix"; then
+        sh <(curl -L https://nixos.org/nix/install) --no-daemon
+        . /home/dan/.nix-profile/etc/profile.d/nix.sh
     fi
 }
 
-function manual_install_nvm () {
-    if ! [ -f ~/.nvm/nvm.sh ]; then
-        not_found_alert "nvm"
-        export NVM_DIR="$HOME/.nvm" && (
-            git clone https://github.com/nvm-sh/nvm.git "$NVM_DIR"
-            cd "$NVM_DIR"
-            git checkout \
-                `git describe --abbrev=0 --tags --match "v[0-9]*" \
-                $(git rev-list --tags --max-count=1)`
-        ) && \. "$NVM_DIR/nvm.sh"
-        return
-    fi
-    printf "%s\n" "✅ nvm: $(find ~ -type d -name ".nvm")"
-}
-
-function manual_install_poetry () {
-    if if_no_exe_cmd "poetry"; then
-        curl -sSL \
-        https://raw.githubusercontent.com/python-poetry/poetry/master/get-poetry.py \
-        | python -
+function manual_install_spack () {
+    if if_no_which "spack"; then
+        cd ~ || exit
+        git clone -c feature.manyFiles=true https://github.com/spack/spack.git
     fi
 }
 
-function manual_install_brew () {
-    if if_no_exe_cmd "brew"; then
-        yes "" | /bin/bash -c \
-            "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
+function manual_install_asdf_vm () {
+    if if_no_which "asdf"; then
+        git clone https://github.com/asdf-vm/asdf.git ~/.asdf --branch v0.10.2
+        # ~/.bashrc:
+        # . $HOME/.asdf/asdf.sh
+        # . $HOME/.asdf/completions/asdf.bash
+    fi
+}
+
+function install_ruby_dependencies () {
+    sudo apt-get install \
+        "autoconf" "bison" "build-essential" \
+        "libssl-dev" "libyaml-dev" "libreadline6-dev" \
+        "zlib1g-dev" "libncurses5-dev" "libffi-dev" \
+        "libgdbm6" "libgdbm-dev" "libdb-dev" "uuid-dev"
+}
+
+function asdf_vm_install_plugins () {
+    if if_no_exe_cmd "node"; then
+        sudo apt-get install dirmngr gpg curl gawk
+        asdf plugin add nodejs https://github.com/asdf-vm/asdf-nodejs.git
+        asdf install nodejs lts
+    fi
+    if if_no_exe_cmd "ruby"; then
+        install_ruby_dependencies
+        asdf plugin add ruby https://github.com/asdf-vm/asdf-ruby.git
+        asdf install ruby 3.1.2
     fi
 }
 
 function manual_install_perlbrew () {
     if if_no_exe_cmd "perlbrew"; then
-        curl -L https://install.perlbrew.pl | bash
+        \curl -L https://install.perlbrew.pl | bash
         # Sub shell:
         # perlbrew install perl-5.34.0 && perlbrew switch perl-5.34.0
         # tail -f ~/perl5/perlbrew/build.perl-5.34.0.log
     fi
 }
 
-function manual_install_nix () {
-    if if_no_exe_cmd "nix"; then
-        sh <(curl -L https://nixos.org/nix/install) --no-daemon
-    fi
-}
-
-function manual_install_jabba () {
-    if [ ! -f ~/.jabba/jabba.sh ]; then
-        not_found_alert "jabba"
-        export JABBA_VERSION=0.11.2
-        curl -sL https://github.com/shyiko/jabba/raw/master/install.sh \
-            | bash -s -- --skip-rc && . ~/.jabba/jabba.sh
-        jabba install adopt@1.11.0-11 && jabba use adopt@1.11.0-11
-    else
-        printf "%s\n" "✅ jabba: $(find ~ -type d -name ".jabba")"
-    fi
-}
-
-# yes |
-# yes | ""
 function manual_install_g () {
     if if_no_exe_cmd "g"; then
-        # Prevent this script modifying ~/.bashrc
-        curl -sSL https://git.io/g-install | sh -s
+        curl -sSL https://git.io/g-install | sh -s -- -y
     fi
 }
 
-manual_install_alda
-manual_install_nvm
-manual_install_poetry
-manual_install_brew
-manual_install_perlbrew
 manual_install_nix
-manual_install_jabba
+manual_install_spack
+manual_install_asdf_vm
+asdf_vm_install_plugins
+manual_install_perlbrew
 manual_install_g

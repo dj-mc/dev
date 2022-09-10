@@ -17,3 +17,13 @@ function if_no_exe_cmd () {
         false
     fi
 }
+
+function if_no_which () {
+    if ! [ -x "$(which "$1")" ]; then
+        not_found_alert "$1"
+        return
+    else
+        found_alert "$1"
+        false
+    fi
+}

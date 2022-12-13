@@ -55,9 +55,16 @@ function manual_install_perlbrew () {
     fi
 }
 
-function manual_install_g () {
-    if if_no_exe_cmd "g"; then
-        curl -sSL https://git.io/g-install | sh -s -- -y
+function manual_install_go () {
+    if if_no_exe_cmd "go"; then
+        return
+        # rm -rf /usr/local/go && tar -C /usr/local -xzf go1.19.1.linux-amd64.tar.gz
+    fi
+}
+
+function manual_install_fly_io () {
+    if if_no_exe_cmd "fly"; then
+        curl -L https://fly.io/install.sh | sh
     fi
 }
 
@@ -66,4 +73,5 @@ manual_install_spack
 manual_install_asdf_vm
 asdf_vm_install_plugins
 manual_install_perlbrew
-manual_install_g
+# manual_install_go
+manual_install_fly_io

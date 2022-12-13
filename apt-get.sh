@@ -17,25 +17,21 @@ function add_ppa_repo () {
 declare -a apt_list=(
     "git" "stow"
     "7zip" "borgbackup" "pass"
-    "curl" "smem" "tree"
+    "curl" "smem" "tree" "net-tools"
+
     "build-essential" "clang" "clangd" "llvm"
     "python3-pip" "python3.10-venv"
     # --- # --- # --- #
-    # "git-crypt" "git-secret"
-    # --- # --- # --- #
-    # "libbz2-dev" "libffi-dev" "liblzma-dev"
-    # "libncursesw5-dev" "libreadline-dev" "libsfml-dev"
-    # "libsqlite3-dev" "libssl-dev" "libxml2-dev"
-    # "libxmlsec1-dev" "xz-utils" "zlib1g-dev"
-    # --- # --- # --- #
     # "emacs"
     # "devscripts"
+    # "git-crypt" "git-secret"
     # --- # --- # --- #
-    "gnome-tweaks"
-    # --- # --- # --- #
-    "i3" "qemu"
+    "i3" "lynx"
     "tmux" "vim" "xterm"
     "shellcheck" "zsh"
+    "nasm" "qemu-system-x86"
+    # --- # --- # --- #
+    "gnome-tweaks"
     # --- # --- # --- #
     # "kdenlive" "krita"
     # --- # --- # --- #

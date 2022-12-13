@@ -10,13 +10,14 @@ DE="$XDG_CURRENT_DESKTOP"
 printf "%s\n" "Detected $OS and $DE"
 
 declare -a pipx_list=(
+    "httpie"
     "tox" "twine"
     "black" "flake8"
     # pdm:
     # pdm completion bash \
     # > /etc/bash_completion.d/pdm.bash-completion
-    "cookiecutter"
-    "pdm" "poetry"
+    # pdm config check_update false
+    "cookiecutter" "pdm"
     "cmake" "ninja"
     "git-filter-repo"
     "beautysh"
@@ -24,6 +25,8 @@ declare -a pipx_list=(
 
 declare -a npm_list=(
     "pnpm" "yarn"
+    # corepack prepare yarn@stable --activate
+    # yarn set version stable
     "http-server" "json-server" "nodemon"
     "npm-check-updates" "cspell"
 )

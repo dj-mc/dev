@@ -1,7 +1,9 @@
 #!/usr/bin/env bash
 
+# set -> reset to undo commands
 gsettings set org.gnome.Evince allow-links-change-zoom false
 gsettings set org.gnome.nautilus.preferences show-hidden-files true
+gsettings set org.gnome.shell.extensions.dash-to-dock click-action 'cycle-windows'
 
 # sudo apt-get install dconf-editor
 

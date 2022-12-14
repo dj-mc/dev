@@ -9,13 +9,6 @@ function manual_install_nix () {
     fi
 }
 
-function manual_install_spack () {
-    if if_no_which "spack"; then
-        cd ~ || exit
-        git clone -c feature.manyFiles=true https://github.com/spack/spack.git
-    fi
-}
-
 function manual_install_asdf_vm () {
     if if_no_which "asdf"; then
         git clone https://github.com/asdf-vm/asdf.git ~/.asdf --branch v0.10.2
@@ -69,7 +62,6 @@ function manual_install_fly_io () {
 }
 
 manual_install_nix
-manual_install_spack
 manual_install_asdf_vm
 asdf_vm_install_plugins
 manual_install_perlbrew

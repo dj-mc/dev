@@ -4,7 +4,6 @@
 
 sudo apt update; sudo apt upgrade -y
 nix-channel --update; nix-env -iA nixpkgs.nix nixpkgs.cacert
-cd ~/spack || exit; git pull
 
 python3 -m pip install --upgrade pip
 pip3 install --upgrade pipx

@@ -15,28 +15,46 @@ function add_ppa_repo () {
 }
 
 declare -a apt_list=(
-    "git" "stow"
+    "curl" "git" "stow"
     "7zip" "borgbackup" "pass"
-    "curl" "smem" "tree" "net-tools"
+    "htop" "net-tools" "tree" "smem"
 
     "build-essential" "clang" "clangd" "llvm"
     "python3-pip" "python3.10-venv"
+    "nasm" "qemu-system-x86"
+
     # --- # --- # --- #
+
     # "emacs"
     # "devscripts"
     # "git-crypt" "git-secret"
+
     # --- # --- # --- #
+
     "i3" "lynx"
     "tmux" "vim" "xterm"
     "shellcheck" "zsh"
-    "nasm" "qemu-system-x86"
+
     # --- # --- # --- #
+
+    # TODO: Remove snap-store
+    # sudo snap remove snap-store \
+    # && sudo apt install gnome-software
     "gnome-tweaks"
+
     # --- # --- # --- #
+
     # "kdenlive" "krita"
+    # "youtube-dl"
+
     # --- # --- # --- #
+
     # "cmus" "lmms"
     # "supercollider"
+
+    # --- # --- # --- #
+
+    "anki"
 )
 
 function apt_install_list () {

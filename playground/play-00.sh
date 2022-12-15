@@ -2,6 +2,7 @@
 
 function list_shells() {
     cat /etc/shells
+    # Useless use of `cat`
     cat /etc/passwd | grep dan
 }
 
@@ -56,13 +57,9 @@ function directory_stack() {
 }
 
 # Attempts at getting function names from this file:
-
 # grep "^function" "$0"
-
 # typeset -f | awk '/ \(\) / {print $1}'
-
 # typeset -f | awk '/ \(\) $/ && !/^main / {print $1}'
-
 # declare -F | awk '{print $NF}'
 
 # Alphabetical order, not declared order
@@ -96,3 +93,5 @@ function main() {
 }
 
 main
+
+hash

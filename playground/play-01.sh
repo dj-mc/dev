@@ -1,7 +1,8 @@
 #!/usr/bin/env bash
 
 function user_info() {
-    echo "Welcome, $USER"
+    echo "Welcome, $USER@$(hostname)"
+    echo "Using $(uname -s) on $(uname -m) architecture"
     echo "Your uptime: $(uptime | awk '{print $3, $4}')"
 
     echo "Today is: $(date), Week is: $(date +"%V")/52"
@@ -11,7 +12,9 @@ function user_info() {
         "$(w | cut -d " " -f1 - | grep -v USER)"
     echo
 
-    echo "Using $(uname -s) on $(uname -m) architecture"
+    echo "Counted $(pgrep -u root | wc -l) root processes"
+    echo "Counted $(ps -e | tail -n+2 | wc -l) total processes"
+    echo "Counted $(printenv | wc -l) environment vars"
 }
 
 function init_scripts() {
@@ -25,7 +28,7 @@ function init_scripts() {
 
 function usr_bin_bash_info() {
     echo "Where is bash: $(whereis bash | awk '{print $2}')"
-    echo "Version of bash: $(bash --version | head -n1)"
+    echo "Version of bash: $(bash --version | head -n1 | awk -F', ' '{print $2}')"
 }
 
 user_info
